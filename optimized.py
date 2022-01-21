@@ -20,11 +20,11 @@ def print_grid(grid: List[List], shares, budgets) -> None:
 
             if col_idx == 0:
                 print(f'A{shares[row_idx].id.lstrip("Action-"): <6}', end='\t')
-                print(f'{f"{share_comb.cumulated_profit * 100:.2f}%": <9}', end='\t')
+                print(f'{f"{share_comb.two_years_profit:.2f}€": <9}', end='\t')
             elif col_idx == len(row) - 1:
-                print(f'{share_comb.cumulated_profit * 100:.2f}%')
+                print(f'{share_comb.two_years_profit:.2f}€')
             else:
-                print(f'{f"{share_comb.cumulated_profit * 100:.2f}%": <9}', end='\t')
+                print(f'{f"{share_comb.two_years_profit:.2f}€": <9}', end='\t')
 
 
 def optimized_shares_combination(shares: List[Share]) -> ShareCombination:

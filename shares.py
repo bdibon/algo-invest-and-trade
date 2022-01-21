@@ -33,7 +33,6 @@ class ShareCombination:
         self.shares_set = shares
         self._calc_total_cost()
         self._calc_two_years_profit()
-        self._calc_cumulated_profit()
 
     def __str__(self):
         return str({share.id for share in self.shares_set})
@@ -79,21 +78,15 @@ class ShareCombination:
 
         return reduce(callback, self.shares_set, '')
 
-    @property
-    def cumulated_profit(self):
-        return self._cumulated_profit
-
     def add(self, share):
         self._shares_set.add(share)
         self._total_cost += share.cost
         self._two_years_profit += share.cost * share.profit
-        self._cumulated_profit += share.profit
 
     def remove(self, share):
         self._shares_set.remove(share)
         self._total_cost -= share.cost
         self._two_years_profit -= share.cost * share.profit
-        self._cumulated_profit -= share.profit
 
     def copy(self):
         return ShareCombination(self._shares_set.copy())
@@ -109,9 +102,3 @@ class ShareCombination:
         for share in self.shares_set:
             self._two_years_profit += share.cost * share.profit
         return self._two_years_profit
-
-    def _calc_cumulated_profit(self):
-        self._cumulated_profit = 0
-        for share in self.shares_set:
-            self._cumulated_profit += share.profit
-        return self._cumulated_profit
