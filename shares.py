@@ -5,13 +5,7 @@ from typing import List
 
 from tabulate import tabulate
 
-RawShare = namedtuple('Share', 'id cost profit')
-
-
-class Share(RawShare):
-    @property
-    def cost_cents(self):
-        return self.cost * 100
+Share = namedtuple('Share', 'id cost profit')
 
 
 def load_shares_from_csv(filename: str) -> List[Share]:
