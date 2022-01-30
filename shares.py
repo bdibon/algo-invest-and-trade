@@ -1,3 +1,5 @@
+"""Utilities that helps to solve the best shares set problem."""
+
 import csv
 from collections import namedtuple
 from functools import reduce
@@ -23,6 +25,8 @@ def print_shares_combinations(shares_data):
 
 
 class ShareCombination:
+    """A wrapper class around the set data type that provides business logic to deal with a set of actions."""
+
     def __init__(self, shares=None):
         self.shares_set = shares
         self._calc_total_cost()

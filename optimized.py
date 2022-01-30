@@ -1,3 +1,5 @@
+"""Dynamic programming solution to get the best set of shares."""
+
 from typing import List
 
 from shares import Share, load_shares_from_csv, ShareCombination, print_shares_combinations
@@ -6,6 +8,7 @@ MAX_COST = 500
 
 
 def print_grid(grid: List[List], shares, budgets) -> None:
+    """Prints the underlying grid for the optimized_shares_combination algorithm."""
     for row_idx, row in enumerate(grid):
         for budget_idx, budget in enumerate(budgets):
             if row_idx == 0:
@@ -28,6 +31,7 @@ def print_grid(grid: List[List], shares, budgets) -> None:
 
 
 def optimized_shares_combination(shares: List[Share]) -> ShareCombination:
+    """Finds the best ShareCombination in O(n * m)."""
     sorted_costs = [share.cost for share in shares]
     sorted_costs.sort()
 
@@ -76,4 +80,5 @@ def optimized_shares_combination(shares: List[Share]) -> ShareCombination:
 
 
 shares_catalog = load_shares_from_csv('shares.csv')
-print_shares_combinations([optimized_shares_combination(shares_catalog)])
+best_shares_comb = optimized_shares_combination(shares_catalog)
+print_shares_combinations([best_shares_comb])

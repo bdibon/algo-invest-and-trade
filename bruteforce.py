@@ -1,3 +1,5 @@
+"""Brute force solution to find the optimal set of shares."""
+
 from shares import load_shares_from_csv, ShareCombination, print_shares_combinations
 
 SHARES = load_shares_from_csv('shares.csv')
@@ -5,6 +7,7 @@ MAX_COST = 500
 
 
 def brute_force_shares_combinations(share_comb: ShareCombination):
+    """Finds all possible ShareCombination in O(2^n)."""
     combinations = []
 
     def _bfsc(index=0):
