@@ -28,6 +28,23 @@ def brute_force_shares_combinations(share_comb: ShareCombination):
     return combinations
 
 
-share_combinations = brute_force_shares_combinations(ShareCombination())
-share_combinations.sort(key=lambda share_comb: share_comb.two_years_profit, reverse=True)
-print_shares_combinations(share_combinations[:50])
+if __name__ == '__main__':
+    import sys
+
+    if '-t' in sys.argv:
+        import timeit
+
+        t_flag_index = sys.argv.index('-t')
+        number = int(sys.argv[t_flag_index + 1]) if t_flag_index + 1 < len(sys.argv) else 1
+        t = timeit.timeit(
+            f'share_combinations = brute_force_shares_combinations(ShareCombination())\n'
+            f'share_combinations.sort(key=lambda share_comb: share_comb.two_years_profit, reverse=True)\n'
+            f'share_combinations[0]',
+            setup=f"from __main__ import brute_force_shares_combinations\n"
+                  f"from shares import ShareCombination",
+            number=number)
+        print(t)
+    else:
+        share_combinations = brute_force_shares_combinations(ShareCombination())
+        share_combinations.sort(key=lambda share_comb: share_comb.two_years_profit, reverse=True)
+        print_shares_combinations(share_combinations[:1])

@@ -79,6 +79,21 @@ def optimized_shares_combination(shares: List[Share]) -> ShareCombination:
     return best_comb
 
 
-shares_catalog = load_shares_from_csv('shares.csv')
-best_shares_comb = optimized_shares_combination(shares_catalog)
-print_shares_combinations([best_shares_comb])
+if __name__ == '__main__':
+    import sys
+
+    if '-t' in sys.argv:
+        import timeit
+
+        t_flag_index = sys.argv.index('-t')
+        number = int(sys.argv[t_flag_index + 1]) if t_flag_index + 1 < len(sys.argv) else 1
+        t = timeit.timeit('optimized_shares_combination(shares_catalog)',
+                          setup=f"from __main__ import optimized_shares_combination\n"
+                                f"from shares import load_shares_from_csv\n"
+                                f"shares_catalog = load_shares_from_csv('shares.csv')",
+                          number=number)
+        print(t)
+    else:
+        shares_catalog = load_shares_from_csv('shares.csv')
+        best_shares_comb = optimized_shares_combination(shares_catalog)
+        print_shares_combinations([best_shares_comb])
