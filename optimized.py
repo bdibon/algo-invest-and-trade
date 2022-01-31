@@ -28,9 +28,10 @@ def print_grid(grid: List[List], shares, budgets) -> None:
                 print(f'{share_comb.two_years_profit:.2f}€')
             else:
                 print(f'{f"{share_comb.two_years_profit:.2f}€": <9}', end='\t')
+    print()
 
 
-def optimized_shares_combination(shares: List[Share]) -> ShareCombination:
+def optimized_shares_combination(shares: List[Share], should_print: bool = False) -> ShareCombination:
     """Finds the best ShareCombination in O(n * m)."""
     sorted_costs = [share.cost for share in shares]
     sorted_costs.sort()
@@ -75,6 +76,9 @@ def optimized_shares_combination(shares: List[Share]) -> ShareCombination:
                     else:
                         grid[share_idx][budget_idx] = current_share_comb
 
+    if should_print:
+        print_grid(grid, shares, sub_budgets)
+
     best_comb = grid[-1][-1]
     return best_comb
 
@@ -94,6 +98,14 @@ if __name__ == '__main__':
                           number=number)
         print(t)
     else:
-        shares_catalog = load_shares_from_csv('shares.csv')
-        best_shares_comb = optimized_shares_combination(shares_catalog)
+        print_flag = True if '-p' in sys.argv else False
+        debug_flag = True if '-d' in sys.argv else False
+
+        if debug_flag:
+            shares_catalog = load_shares_from_csv('debug.csv')
+            MAX_COST = 14
+        else:
+            shares_catalog = load_shares_from_csv('shares.csv')
+
+        best_shares_comb = optimized_shares_combination(shares_catalog, print_flag)
         print_shares_combinations([best_shares_comb])
