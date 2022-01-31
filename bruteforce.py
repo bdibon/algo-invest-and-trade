@@ -3,7 +3,8 @@
 from shares import load_shares_from_csv, ShareCombination, print_shares_combinations
 
 SHARES = load_shares_from_csv('shares.csv')
-MAX_COST = 500
+CENTS_PER_EURO = 100
+MAX_COST = 500 * CENTS_PER_EURO
 
 
 def brute_force_shares_combinations(share_comb: ShareCombination):
@@ -11,7 +12,7 @@ def brute_force_shares_combinations(share_comb: ShareCombination):
     combinations = []
 
     def _bfsc(index=0):
-        if index >= len(SHARES) or share_comb.total_cost + SHARES[index].cost > MAX_COST:
+        if index >= len(SHARES) or share_comb.total_cost_cents + SHARES[index].cost > MAX_COST:
             if len(share_comb) != 0:
                 combinations.append(share_comb.copy())
             return

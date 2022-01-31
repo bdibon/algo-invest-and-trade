@@ -7,21 +7,25 @@ from typing import List
 
 from tabulate import tabulate
 
-RawShare = namedtuple('Share', 'id cost profit')
-
-
-class Share(RawShare):
-    @property
-    def cost_cents(self):
-        return self.cost * 100
+Share = namedtuple('Share', 'id cost profit')
 
 
 def load_shares_from_csv(filename: str) -> List[Share]:
     with open(filename) as file:
         share_reader = csv.DictReader(file, fieldnames=['id', 'cost', 'profit'])
         next(share_reader)
-        return [Share(share['id'], int(share['cost']), int(share['profit'].rstrip('%')) / 100) for
+        return [Share(share['id'], int(share['cost']) * 100, int(share['profit'].rstrip('%')) / 100) for
                 share in share_reader]
+
+
+def load_shares_from_dataset1(filename: str) -> List[Share]:
+    with open(filename) as file:
+        share_reader = csv.DictReader(file, fieldnames=['id', 'price', 'profit'])
+        next(share_reader)
+        shares = [Share(share['id'], int(round(float(share['price']), 2) * 100), round(float(share['profit']) / 100, 2))
+                  for
+                  share in share_reader]
+        return [share for share in shares if share.cost > 0]
 
 
 def print_shares_combinations(shares_data):
@@ -63,16 +67,20 @@ class ShareCombination:
         self._shares_set = shares
 
     @property
-    def total_cost(self):
+    def total_cost_cents(self):
         return self._total_cost
 
     @property
+    def total_cost(self):
+        return round(self._total_cost / 100, 2)
+
+    @property
     def two_years_profit(self):
-        return self._two_years_profit
+        return round(self._two_years_profit / 100, 2)
 
     @property
     def shares_ids(self):
-        def callback(result, share):
+        def callback_action_dash(result, share):
             contraction = 'A' + share.id.lstrip("Action-")
             if len(result) == 0:
                 result += contraction
@@ -80,7 +88,19 @@ class ShareCombination:
                 result += ', ' + contraction
             return result
 
-        return reduce(callback, self.shares_set, '')
+        def callback_vanilla(result, share):
+            if len(result) == 0:
+                result += share.id
+            else:
+                result += ', ' + share.id
+            return result
+
+        if 'Action-' in next(iter(self.shares_set)):
+            # Case: original.
+            return reduce(callback_action_dash, self.shares_set, '')
+        else:
+            # Case: dataset1.
+            return reduce(callback_vanilla, self.shares_set, '')
 
     def add(self, share):
         self._shares_set.add(share)

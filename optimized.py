@@ -2,10 +2,11 @@
 
 from typing import List
 
-from shares import Share, load_shares_from_csv, ShareCombination, print_shares_combinations
+from shares import Share, load_shares_from_csv, load_shares_from_dataset1, ShareCombination, print_shares_combinations
 
 DEFAULT_CSV_FILE = 'shares.csv'
-MAX_COST = 500
+CENTS_PER_EURO = 100
+MAX_COST = 500 * CENTS_PER_EURO
 
 
 def print_grid(grid: List[List], shares, budgets) -> None:
@@ -42,10 +43,11 @@ def optimized_shares_combination(shares: List[Share], should_print: bool = False
     for curr_idx in range(len(sorted_costs) - 1):
         next_idx = curr_idx + 1
         diff = abs(sorted_costs[curr_idx] - sorted_costs[next_idx])
-        if min_diff is None or diff < min_diff:
+        if min_diff is None and diff != 0 or 0 < diff < min_diff:
             min_diff = diff
 
-    sub_budgets = list(range(sorted_costs[0], MAX_COST + 1, min_diff))
+    min_budget = sorted_costs[0]
+    sub_budgets = list(range(min_budget, MAX_COST + 1, min_diff))
     grid = [[None for col in range(len(sub_budgets))] for row in range(len(shares))]
 
     for share_idx, share in enumerate(shares):
@@ -67,7 +69,7 @@ def optimized_shares_combination(shares: List[Share], should_print: bool = False
                     share_comb.add(share)
 
                     # Use previous solution.
-                    budget_left_idx = budget_left // min_diff - min_diff
+                    budget_left_idx = (budget_left - min_budget) // min_diff
                     if budget_left_idx >= 0:
                         budget_left_comb = grid[share_idx - 1][budget_left_idx]
                         share_comb += budget_left_comb
@@ -87,31 +89,35 @@ def optimized_shares_combination(shares: List[Share], should_print: bool = False
 if __name__ == '__main__':
     import sys
 
+    print_flag = True if '-p' in sys.argv else False
+    debug_flag = True if '--debug' in sys.argv else False
+    source_file = DEFAULT_CSV_FILE
+
+    # Data source.
+    if '--dataset1' in sys.argv:
+        source_file = 'dataset1_Python+P7.csv'
+        shares_catalog = load_shares_from_dataset1(source_file)
+    elif '--dataset2' in sys.argv:
+        pass
+    else:
+        shares_catalog = load_shares_from_csv(source_file)
+
+    # Use debug dataset.
+    if debug_flag:
+        shares_catalog = load_shares_from_csv('debug.csv')
+        MAX_COST = 14 * 100
+
     if '-t' in sys.argv:
+        # Time execution.
         import timeit
 
         t_flag_index = sys.argv.index('-t')
         number = int(sys.argv[t_flag_index + 1]) if t_flag_index + 1 < len(sys.argv) else 1
         t = timeit.timeit('optimized_shares_combination(shares_catalog)',
-                          setup=f"from __main__ import optimized_shares_combination\n"
-                                f"from shares import load_shares_from_csv\n"
-                                f"shares_catalog = load_shares_from_csv({DEFAULT_CSV_FILE})",
+                          globals=globals(),
                           number=number)
         print(t)
     else:
-        print_flag = True if '-p' in sys.argv else False
-        debug_flag = True if '-d' in sys.argv else False
-        source_file = DEFAULT_CSV_FILE
-
-        if '-f' in sys.argv:
-            f_flag_index = sys.argv.index('-f')
-            source_file = sys.argv[f_flag_index + 1] if f_flag_index + 1 < len(sys.argv) else DEFAULT_CSV_FILE
-
-        if debug_flag:
-            shares_catalog = load_shares_from_csv('debug.csv')
-            MAX_COST = 14
-        else:
-            shares_catalog = load_shares_from_csv(source_file)
-
+        # Execute algorithm.
         best_shares_comb = optimized_shares_combination(shares_catalog, print_flag)
         print_shares_combinations([best_shares_comb])
