@@ -4,6 +4,7 @@ from typing import List
 
 from shares import Share, load_shares_from_csv, ShareCombination, print_shares_combinations
 
+DEFAULT_CSV_FILE = 'shares.csv'
 MAX_COST = 500
 
 
@@ -94,18 +95,23 @@ if __name__ == '__main__':
         t = timeit.timeit('optimized_shares_combination(shares_catalog)',
                           setup=f"from __main__ import optimized_shares_combination\n"
                                 f"from shares import load_shares_from_csv\n"
-                                f"shares_catalog = load_shares_from_csv('shares.csv')",
+                                f"shares_catalog = load_shares_from_csv({DEFAULT_CSV_FILE})",
                           number=number)
         print(t)
     else:
         print_flag = True if '-p' in sys.argv else False
         debug_flag = True if '-d' in sys.argv else False
+        source_file = DEFAULT_CSV_FILE
+
+        if '-f' in sys.argv:
+            f_flag_index = sys.argv.index('-f')
+            source_file = sys.argv[f_flag_index + 1] if f_flag_index + 1 < len(sys.argv) else DEFAULT_CSV_FILE
 
         if debug_flag:
             shares_catalog = load_shares_from_csv('debug.csv')
             MAX_COST = 14
         else:
-            shares_catalog = load_shares_from_csv('shares.csv')
+            shares_catalog = load_shares_from_csv(source_file)
 
         best_shares_comb = optimized_shares_combination(shares_catalog, print_flag)
         print_shares_combinations([best_shares_comb])
