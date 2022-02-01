@@ -28,6 +28,10 @@ def load_shares_from_dataset1(filename: str) -> List[Share]:
         return [share for share in shares if share.cost > 0]
 
 
+def load_shares_from_dataset2(filename: str) -> List[Share]:
+    return load_shares_from_dataset1(filename)
+
+
 def print_shares_combinations(shares_data):
     table_headers = ['Shares', 'Total Cost', '2 years profit']
     table = [[share_comb.shares_ids, share_comb.total_cost, share_comb.two_years_profit] for share_comb in shares_data]

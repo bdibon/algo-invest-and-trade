@@ -2,7 +2,8 @@
 
 from typing import List
 
-from shares import Share, load_shares_from_csv, load_shares_from_dataset1, ShareCombination, print_shares_combinations
+from shares import Share, load_shares_from_csv, load_shares_from_dataset1, ShareCombination, print_shares_combinations, \
+    load_shares_from_dataset2
 
 DEFAULT_CSV_FILE = 'shares.csv'
 CENTS_PER_EURO = 100
@@ -98,7 +99,8 @@ if __name__ == '__main__':
         source_file = 'dataset1_Python+P7.csv'
         shares_catalog = load_shares_from_dataset1(source_file)
     elif '--dataset2' in sys.argv:
-        pass
+        source_file = 'dataset2_Python+P7.csv'
+        shares_catalog = load_shares_from_dataset2(source_file)
     else:
         shares_catalog = load_shares_from_csv(source_file)
 
