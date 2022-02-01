@@ -52,10 +52,12 @@ if __name__ == '__main__':
         t_flag_index = sys.argv.index('-t')
         number = int(sys.argv[t_flag_index + 1]) if t_flag_index + 1 < len(sys.argv) else 1
         t = timeit.timeit(
-            f'share_combinations = brute_force_shares_combinations()\n'
+            f'share_combinations = brute_force_shares_combinations(load_shares_from_csv("shares.csv"))\n'
             f'share_combinations.sort(key=lambda share_comb: share_comb.two_years_profit, reverse=True)\n'
             f'share_combinations[0]',
-            setup=f"from __main__ import brute_force_shares_combinations\n",
+            setup=
+            f"from __main__ import brute_force_shares_combinations\n"
+            f"from shares import load_shares_from_csv",
             number=number)
         print(t)
     else:
