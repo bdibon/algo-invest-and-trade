@@ -23,7 +23,6 @@ def print_grid(grid: List[List], shares, budgets) -> None:
                     nb_digits = len(str(budgets[budget_idx]))
                     print(f"{f'{budgets[budget_idx]}€': <12}", end='')
         for col_idx, share_comb in enumerate(row):
-
             if col_idx == 0:
                 print(f'A{shares[row_idx].id.lstrip("Action-"): <6}', end='\t')
                 print(f'{f"{share_comb.two_years_profit:.2f}€": <9}', end='\t')

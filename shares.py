@@ -25,7 +25,7 @@ def load_shares_from_dataset1(filename: str) -> List[Share]:
         shares = [Share(share['id'], int(round(float(share['price']), 2) * 100), round(float(share['profit']) / 100, 2))
                   for
                   share in share_reader]
-        return [share for share in shares if share.cost > 0]
+        return [share for share in shares if share.cost > 0 and share.profit > 0]
 
 
 def load_shares_from_dataset2(filename: str) -> List[Share]:
